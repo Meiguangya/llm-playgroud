@@ -10,7 +10,7 @@ class Settings:
     CHROMA_COLLECTION_NAME = os.getenv("CHROMA_COLLECTION_NAME", "default_collection")
 
     # 嵌入模型配置
-    EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "all-MiniLM-L6-v2")
+    # EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "all-MiniLM-L6-v2")
 
     # 是否启用持久化
     CHROMA_PERSIST = os.getenv("CHROMA_PERSIST", "true").lower() == "true"
