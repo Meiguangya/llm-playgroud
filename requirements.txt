@@ -1,0 +1,136 @@
+aiohappyeyeballs==2.6.1
+aiohttp==3.12.15
+aiosignal==1.4.0
+annotated-types @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_1fa2djihwb/croot/annotated-types_1709542925772/work
+anyio==4.10.0
+attrs==25.3.0
+backoff==2.2.1
+bcrypt==4.3.0
+brotlicffi @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_b5py2dr5ag/croot/brotlicffi_1736182482518/work
+build==1.3.0
+cachetools==5.5.2
+certifi @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_barck9k8fe/croot/certifi_1754570651396/work/certifi
+cffi @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_e4xd9yd9i2/croot/cffi_1736182819442/work
+chardet==5.2.0
+charset-normalizer==3.4.3
+chromadb==1.0.17
+click==8.2.1
+coloredlogs==15.0.1
+cryptography==45.0.6
+dashscope==1.24.1
+dataclasses-json==0.6.7
+distro @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_ddkyz0575y/croot/distro_1714488254309/work
+dnspython==2.7.0
+durationpy==0.10
+email_validator==2.2.0
+fastapi==0.116.1
+filelock==3.19.1
+flatbuffers==25.2.10
+frozenlist==1.7.0
+fsspec==2025.7.0
+google-auth==2.40.3
+googleapis-common-protos==1.70.0
+grpcio==1.74.0
+h11 @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_557zp2ij9k/croot/h11_1748442489221/work
+hf-xet==1.1.7
+httpcore @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_941yf7p5zt/croot/httpcore_1748526061031/work
+httptools==0.6.4
+httpx @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_28ztzk1ij8/croot/httpx_1746747850138/work
+httpx-sse==0.4.1
+huggingface-hub==0.34.4
+humanfriendly==10.0
+idna==3.10
+importlib_metadata==8.7.0
+importlib_resources==6.5.2
+jiter @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_f4n0iuya3b/croot/jiter_1729808946806/work
+jsonpatch @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_3ajyoz8zoj/croot/jsonpatch_1714483362270/work
+jsonpointer @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_bdid71leqg/croot/jsonpointer_1753788445166/work
+jsonschema==4.25.0
+jsonschema-specifications==2025.4.1
+kubernetes==33.1.0
+langchain==0.3.27
+langchain-chroma==0.2.5
+langchain-community==0.3.27
+langchain-core==0.3.74
+langchain-openai @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_3799o61w21/croot/langchain-openai_1749072006380/work
+langchain-text-splitters==0.3.9
+langgraph==0.6.5
+langgraph-checkpoint==2.1.1
+langgraph-prebuilt==0.6.4
+langgraph-sdk==0.2.0
+langsmith==0.4.14
+markdown-it-py==4.0.0
+marshmallow==3.26.1
+mdurl==0.1.2
+mmh3==5.2.0
+mpmath==1.3.0
+multidict==6.6.4
+mypy_extensions==1.1.0
+numpy==2.3.2
+oauthlib==3.3.1
+onnxruntime==1.19.2
+openai @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_58i_dfv1ng/croot/openai_1746690308540/work
+opentelemetry-api==1.36.0
+opentelemetry-exporter-otlp-proto-common==1.36.0
+opentelemetry-exporter-otlp-proto-grpc==1.36.0
+opentelemetry-proto==1.36.0
+opentelemetry-sdk==1.36.0
+opentelemetry-semantic-conventions==0.57b0
+orjson==3.11.2
+ormsgpack==1.10.0
+overrides==7.7.0
+packaging @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_a6_qk3qyg7/croot/packaging_1734472142254/work
+passlib==1.7.4
+posthog==5.4.0
+propcache==0.3.2
+protobuf==6.32.0
+pyasn1==0.6.1
+pyasn1_modules==0.4.2
+pybase64==1.4.2
+pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
+pydantic @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_ac_4dmd4j4/croot/pydantic_1750769074322/work
+pydantic-settings==2.10.1
+pydantic_core @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_9d3ads2bae/croot/pydantic-core_1750754745671/work
+Pygments==2.19.2
+PyMySQL==1.1.1
+pypdf==6.0.0
+PyPika==0.48.9
+pyproject_hooks==1.2.0
+PySocks @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/pysocks_1699237568675/work
+python-dateutil==2.9.0.post0
+python-dotenv==1.1.1
+PyYAML @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_faoex52hrr/croot/pyyaml_1728657970485/work
+referencing==0.36.2
+regex @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_87pebw_aae/croot/regex_1736541331314/work
+requests @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_6fxef5l5oe/croot/requests_1750426350797/work
+requests-oauthlib==2.0.0
+requests-toolbelt @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/requests-toolbelt_1699238632371/work
+rich==14.1.0
+rpds-py==0.27.0
+rsa==4.9.1
+setuptools==78.1.1
+shellingham==1.5.4
+six==1.17.0
+sniffio==1.3.1
+SQLAlchemy==2.0.43
+starlette==0.47.2
+sympy==1.14.0
+tenacity==9.1.2
+tiktoken @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_ec524s5k93/croot/tiktoken_1748479166250/work
+tokenizers==0.21.4
+tqdm @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_5642tzrprr/croot/tqdm_1738943467095/work
+typer==0.16.0
+typing-inspect==0.9.0
+typing-inspection==0.4.1
+typing_extensions==4.14.1
+urllib3 @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_95v32ztwo_/croot/urllib3_1750775480393/work
+uvicorn==0.35.0
+uvloop==0.21.0
+watchfiles==1.1.0
+websocket-client==1.8.0
+websockets==15.0.1
+wheel==0.45.1
+xxhash==3.5.0
+yarl==1.20.1
+zipp==3.23.0
+zstandard @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_a5_i6g4o6n/croot/zstandard_1731356352787/work
