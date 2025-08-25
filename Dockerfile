@@ -4,15 +4,15 @@ FROM python:3.12-slim
 # 设置工作目录
 WORKDIR /app
 
-# 复制依赖文件并安装
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
 # 复制项目代码
 COPY . .
 
 # 复制 .env 文件（仅用于开发环境）
 COPY .env .env
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
 # 声明端口
 EXPOSE 8000

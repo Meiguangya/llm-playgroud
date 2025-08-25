@@ -1,3 +1,5 @@
 .env
 
 .idea/
+
+/playground_chroma_db/
