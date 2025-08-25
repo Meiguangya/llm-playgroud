@@ -18,6 +18,8 @@ from app.chroma.chroma_client import ChromaSingleton
 from app.api.chroma_router import router as chroma_router
 from app.ai.rag.loader.load_system_file import LoadSystemFile
 
+from app.api.employee import router as employee_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -27,7 +29,9 @@ async def lifespan(app: FastAPI):
     logger.info("Chroma 客户端初始化成功")
 
     print("将数据加载到chroma中")
-    LoadSystemFile.load_system_file()
+
+    # 加个配置
+    # LoadSystemFile.load_system_file()
 
     yield
     logger.info("应用关闭中...")
@@ -60,6 +64,8 @@ app.include_router(ai_chat_router)
 app.include_router(rag_router)
 
 app.include_router(chroma_router, prefix="/api/v1/chroma",tags=["chroma"])
+
+app.include_router(employee_router,tags=["employees"])
 
 
 @app.get("/")
