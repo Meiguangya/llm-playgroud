@@ -1,7 +1,7 @@
 # app/crud/user.py
 from sqlalchemy.orm import Session
 from app import models, schemas
-from app.core.security import get_password_hash
+from app.core.security import hash_password
 
 
 def get_user_by_username(db: Session, username: str):
@@ -13,7 +13,7 @@ def get_user_by_email(db: Session, email: str):
 
 
 def create_user(db: Session, user_in: schemas.UserCreate):
-    hashed_password = get_password_hash(user_in.password)
+    hashed_password = hash_password(user_in.password)
     db_user = models.User(
         username=user_in.username,
         hashed_password=hashed_password,

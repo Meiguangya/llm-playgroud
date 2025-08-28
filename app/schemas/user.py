@@ -29,3 +29,32 @@ class UserOut(BaseModel):
 
     class Config:
         from_attributes = True  # 支持 ORM 模式（新版 Pydantic 使用 from_attributes）
+
+
+
+# 登录请求
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+# Token 响应
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int
+    refresh_token: Optional[str] = None  # 可选：支持刷新
+
+# 用户信息响应
+class UserResponse(BaseModel):
+    user_id: int
+    username: str
+    nickname: Optional[str] = None
+    email: str
+    avatar: Optional[str] = None
+    is_active: bool
+    roles: list[str]
+
+# 登录成功返回的数据结构
+class LoginResponse(BaseModel):
+    token: Token
+    user: UserResponse

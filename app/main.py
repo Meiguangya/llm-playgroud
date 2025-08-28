@@ -13,12 +13,14 @@ logger = logging.getLogger(__name__)
 from app.api.users import router as users_router
 from app.api.dashscope import router as dashscope_router
 from app.api.chat import router as ai_chat_router
-from app.api.rag import  router as rag_router
+from app.api.rag import router as rag_router
 from app.chroma.chroma_client import ChromaSingleton
 from app.api.chroma_router import router as chroma_router
+from app.api.chat_v2 import router as chat_v2_router
 from app.ai.rag.loader.load_system_file import LoadSystemFile
 
 from app.api.employee import router as employee_router
+import os
 
 
 @asynccontextmanager
@@ -31,7 +33,12 @@ async def lifespan(app: FastAPI):
     print("将数据加载到chroma中")
 
     # 加个配置
-    # LoadSystemFile.load_system_file()
+    load_system_doc = os.getenv("LOAD_SYSTEM_DOCUMENT", "false").lower()
+    print(f"load_system_doc:[{load_system_doc}]")
+    if load_system_doc == 'true':
+        LoadSystemFile.load_system_file()
+    else:
+        print("未开启加载系统文档")
 
     yield
     logger.info("应用关闭中...")
@@ -55,7 +62,7 @@ app.add_middleware(
 )
 
 # 包含 API 路由
-app.include_router(users_router, prefix="/api/v1", tags=["users"])
+app.include_router(users_router, tags=["users"])
 # 注册路由
 app.include_router(dashscope_router)
 
@@ -63,14 +70,16 @@ app.include_router(ai_chat_router)
 
 app.include_router(rag_router)
 
-app.include_router(chroma_router, prefix="/api/v1/chroma",tags=["chroma"])
+app.include_router(chroma_router, prefix="/api/v1/chroma", tags=["chroma"])
 
-app.include_router(employee_router,tags=["employees"])
+app.include_router(employee_router, tags=["employees"])
 
+app.include_router(chat_v2_router)
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to My FastAPI Project!"}
+
 
 @app.get("/health")
 def health_check():
