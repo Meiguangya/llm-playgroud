@@ -3,7 +3,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 from app.dependencies.chroma_vectorstore import get_chroma_vectorstore
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1/chroma", tags=["chroma"])
 
 
 @router.post("/add-texts")

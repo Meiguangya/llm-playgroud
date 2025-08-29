@@ -17,11 +17,13 @@ from app.api.rag import router as rag_router
 from app.chroma.chroma_client import ChromaSingleton
 from app.api.chroma_router import router as chroma_router
 from app.api.chat_v2 import router as chat_v2_router
-from app.ai.rag.loader.load_system_file import LoadSystemFile
-
 from app.api.employee import router as employee_router
+from app.api.chat_conversations import router as chat_conversations_router
+
+# 导入一些初始化方法
 import os
 from app.core.redis_client import init_redis
+from app.ai.rag.loader.load_system_file import LoadSystemFile
 
 
 @asynccontextmanager
@@ -33,19 +35,19 @@ async def lifespan(app: FastAPI):
     print("Initializing Redis client end...")
 
     # 应用启动时初始化 Chroma 客户端
-    print("Initializing Chroma client...")
-    ChromaSingleton.get_vectorstore()  # 触发初始化
-    logger.info("Chroma 客户端初始化成功")
-
-    print("将数据加载到chroma中")
-
-    # 加个配置
-    load_system_doc = os.getenv("LOAD_SYSTEM_DOCUMENT", "false").lower()
-    print(f"load_system_doc:[{load_system_doc}]")
-    if load_system_doc == 'true':
-        LoadSystemFile.load_system_file()
-    else:
-        print("未开启加载系统文档")
+    # print("Initializing Chroma client...")
+    # ChromaSingleton.get_vectorstore()  # 触发初始化
+    # logger.info("Chroma 客户端初始化成功")
+    #
+    # print("将数据加载到chroma中")
+    #
+    # # 加个配置
+    # load_system_doc = os.getenv("LOAD_SYSTEM_DOCUMENT", "false").lower()
+    # print(f"load_system_doc:[{load_system_doc}]")
+    # if load_system_doc == 'true':
+    #     LoadSystemFile.load_system_file()
+    # else:
+    #     print("未开启加载系统文档")
 
     yield
     logger.info("应用关闭中...")
@@ -69,7 +71,7 @@ app.add_middleware(
 )
 
 # 包含 API 路由
-app.include_router(users_router, tags=["users"])
+app.include_router(users_router)
 # 注册路由
 app.include_router(dashscope_router)
 
@@ -77,11 +79,13 @@ app.include_router(ai_chat_router)
 
 app.include_router(rag_router)
 
-app.include_router(chroma_router, prefix="/api/v1/chroma", tags=["chroma"])
+app.include_router(chroma_router)
 
-app.include_router(employee_router, tags=["employees"])
+app.include_router(employee_router)
 
 app.include_router(chat_v2_router)
+
+app.include_router(chat_conversations_router)
 
 @app.get("/")
 def read_root():
