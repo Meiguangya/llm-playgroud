@@ -29,13 +29,13 @@ class ChromaSingleton:
                 persist_directory=settings.CHROMA_PERSIST_DIR if settings.CHROMA_PERSIST else None
             )
 
-            # 确保集合存在
-            try:
-                coll = cls._vectorstore._collection.get()
-                print(f"collection get 成功{coll}")
-            except:
-                # 如果集合不存在则创建空集合
-                cls._vectorstore.add_texts(texts=["Initial document"], metadatas=[{}])
+            # # 确保集合存在
+            # try:
+            #     coll = cls._vectorstore._collection.get()
+            #     print(f"collection get 成功{coll}")
+            # except:
+            #     # 如果集合不存在则创建空集合
+            #     cls._vectorstore.add_texts(texts=["Initial document"], metadatas=[{}])
 
 
         return cls._vectorstore

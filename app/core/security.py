@@ -4,14 +4,16 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from typing import Optional
 
+from passlib.hash import argon2
+
 # 密码加密
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+def hash_password(password:str)->str:
+    return argon2.hash(password)
 
-def verify_password(plain_password: str, hashed: str) -> bool:
-    return pwd_context.verify(plain_password, hashed)
+def verify_password(password:str, hashed:str)->bool:
+    return argon2.verify(password, hashed)
 
 # JWT 配置
 SECRET_KEY = "fn8s1ng9s*1$37^n1n23lgl"  # 必须更换！
@@ -36,3 +38,10 @@ def decode_access_token(token: str) -> Optional[dict]:
         return None
     except jwt.JWTError:
         return None
+
+
+if __name__ == "__main__":
+    r = hash_password("test_pass")
+    print(r)
+    t = verify_password("test_pass",r)
+    print(t)

@@ -21,10 +21,17 @@ from app.ai.rag.loader.load_system_file import LoadSystemFile
 
 from app.api.employee import router as employee_router
 import os
+from app.core.redis_client import init_redis
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+
+    # 初始化redis
+    print("Initializing Redis client start...")
+    init_redis()
+    print("Initializing Redis client end...")
+
     # 应用启动时初始化 Chroma 客户端
     print("Initializing Chroma client...")
     ChromaSingleton.get_vectorstore()  # 触发初始化

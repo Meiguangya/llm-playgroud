@@ -58,3 +58,18 @@ class UserResponse(BaseModel):
 class LoginResponse(BaseModel):
     token: Token
     user: UserResponse
+
+
+class CurrentUser:
+    """
+    当前登录用户信息，用于在请求中传递
+    类似 Java 中的 ThreadLocal<User>
+    """
+    def __init__(self, user_id: int, username: str, is_active: bool = True):
+        self.user_id = user_id
+        self.username = username
+        self.is_active = is_active
+        self.is_authenticated = True  # 标记为已认证
+
+    def __repr__(self):
+        return f"<CurrentUser id={self.user_id} username={self.username}>"

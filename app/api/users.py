@@ -1,6 +1,7 @@
 # app/api/users.py
 from datetime import timedelta
 
+import redis
 from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.orm import Session
 
@@ -10,6 +11,10 @@ from app.core.security import hash_password, verify_password, create_access_toke
 from app.common.response import ApiResponse
 from app.models import User
 from app.schemas.user import *
+
+import json
+
+from app.core.redis_client import get_redis
 
 router = APIRouter(prefix="/api/v1/users", tags=["users"])
 
@@ -26,7 +31,8 @@ def get_db():
 @router.post("/login", response_model=ApiResponse[LoginResponse])
 def login(
     request: LoginRequest = Body(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    redis: redis.Redis = Depends(get_redis)
 ):
     # 1. 校验参数
     if not request.username or not request.password:
@@ -45,15 +51,7 @@ def login(
         return ApiResponse.fail(401, "用户名或密码错误")
 
     # 4. 生成 Token
-    token_data = {
-        "sub": str(user.id),
-        "username": user.username,
-        "scopes": ["user"]
-    }
-    access_token = create_access_token(
-        data=token_data,
-        expires_delta=timedelta(minutes=60)
-    )
+    access_token = create_token_and_store_in_redis(user,redis)
 
     # 5. 构造响应数据
     login_response = LoginResponse(
@@ -82,7 +80,9 @@ def login(
 @router.post("/register", response_model=ApiResponse[dict])
 def register_user(
     user_in: UserCreate = Body(...),
-    db: Session = Depends(get_db)):
+    db: Session = Depends(get_db),
+    redis: redis.Redis = Depends(get_redis)
+):
     """
     用户注册接口
     - **username**: 用户名（必填）
@@ -111,16 +111,7 @@ def register_user(
     db.commit()
     db.refresh(db_user)
 
-    token_data = {
-        "sub": str(db_user.id),
-        "username": db_user.username,
-        "scopes": ["user"]
-    }
-
-    access_token = create_access_token(
-        data=token_data,
-        expires_delta=timedelta(minutes=60)
-    )
+    access_token = create_token_and_store_in_redis(db_user,redis)
 
     return ApiResponse.success({
         "message": "注册成功",
@@ -130,3 +121,29 @@ def register_user(
         "token_type": "Bearer",
         "expires_in": 3600
     })
+
+
+def create_token_and_store_in_redis(user: models.User, redis: redis.Redis) -> str:
+    token_data = {
+        "sub": str(user.id),
+        "username": user.username,
+        "scopes": ["user"]
+    }
+    access_token = create_access_token(data=token_data, expires_delta=timedelta(minutes=60))
+
+    redis_key = f"auth:token:{access_token}"
+    redis_value = {
+        "user_id": user.id,
+        "username": user.username,
+        "is_active": user.is_active
+    }
+    try:
+        redis.setex(
+            name=redis_key,
+            time=3600,
+            value=json.dumps(redis_value, ensure_ascii=False)
+        )
+    except Exception as e:
+        print(f"⚠️ Redis 写入失败: {e}")
+
+    return access_token

@@ -9,6 +9,8 @@ from app.db.session import get_db
 from app.schemas.employee import EmployeeBase, EmployeeQuery
 from app.crud.employee import *
 from app.common.response import ApiResponse
+from app.dependencies.get_current_user import get_current_user
+from app.schemas.user import CurrentUser
 
 router = APIRouter(
     prefix="/employees",
@@ -57,11 +59,15 @@ def count_employees(
     gender: Optional[str] = Query(None, description="性别 M/F"),
     birth_date_min: Optional[date] = Query(None, description="最小出生日期，格式 YYYY-MM-DD"),
     birth_date_max: Optional[date] = Query(None, description="最大出生日期，格式 YYYY-MM-DD"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user)
 ):
     """
     根据条件查询员工数量
     """
+
+    print(f"current_user:{current_user}")
+
     count = get_employee_count(db,
                                first_name=first_name,
                                last_name=last_name,

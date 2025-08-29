@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
-from app.dependencies import get_chroma_vectorstore
+from app.dependencies.chroma_vectorstore import get_chroma_vectorstore
 
 router = APIRouter()
 
