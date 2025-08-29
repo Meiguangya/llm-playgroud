@@ -1,9 +1,14 @@
 import asyncio
 
-from fastapi import APIRouter, Request, Header
+from fastapi import APIRouter, Request, Header, Depends
 from fastapi.responses import StreamingResponse
+from sqlalchemy.orm import Session
 
 from app.ai.agent.agent_servcie import AgentService
+from app.db.session import get_db
+from app.schemas.chat_message import CreateMessageDTO
+from app.service.chat_message_service import save_message_to_db,recall_save_message_to_db
+from fastapi import BackgroundTasks
 
 router = APIRouter(prefix="/api/v2", tags=["Chat-V2"])
 
@@ -12,7 +17,8 @@ router = APIRouter(prefix="/api/v2", tags=["Chat-V2"])
 async def chat(
         request: Request,
         model: str = Header(None, alias="model"),
-        chat_id: str = Header(None, alias="chatId")
+        chat_id: str = Header(None, alias="chatId"),
+        db: Session = Depends(get_db)
 ):
     """
     流式聊天接口
@@ -27,17 +33,21 @@ async def chat(
     # 默认模型
     model = model or "qwen-plus"
 
-    # 定义异步生成器，用于流式输出
-    async def generate_stream():
-        try:
-            async for text in AgentService.stream_agent_response2(prompt, model, chat_id):
-                yield text
-                await asyncio.sleep(0)  # 协程让步，避免阻塞
-        except Exception as e:
-            yield f"Error: {str(e)}"
+    # 先保存用户消息到数据库
+    try:
+        user_dto = CreateMessageDTO(
+            conversation_id=chat_id,
+            role="human",
+            content=prompt,
+            model_name=model,
+            metadata={"from": "user"}
+        )
+        save_message_to_db(db, user_dto)
+    except Exception as e:
+        print(f"保存用户消息失败: {e}")
 
     # 返回流式响应
     return StreamingResponse(
-        generate_stream(),
+        AgentService.stream_agent_response3(prompt, model, chat_id, recall_save_message_to_db),
         media_type="text/event-stream"
     )

@@ -42,11 +42,6 @@ async def stream_chat_response(
 
     # 调用异步流式接口
     async for chunk in chat_app.astream(state, config=config):
-        # 将每个 chunk 转换为 SSE 格式（可选，也可以直接返回 JSON 流）
-        # print(f"chunk:{type(chunk)} \n {chunk}")
-        # yield f"dataxxxxx: {chunk}\n\n"
         yield chunk["call_model"]["messages"][-1].content
-        # print(f"{type(chunk)} \n {chunk}")
-        # yield chunk
 
 

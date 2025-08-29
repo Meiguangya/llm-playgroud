@@ -19,6 +19,7 @@ from app.api.chroma_router import router as chroma_router
 from app.api.chat_v2 import router as chat_v2_router
 from app.api.employee import router as employee_router
 from app.api.chat_conversations import router as chat_conversations_router
+from app.api.chat_message import router as chat_message_router
 
 # 导入一些初始化方法
 import os
@@ -86,6 +87,8 @@ app.include_router(employee_router)
 app.include_router(chat_v2_router)
 
 app.include_router(chat_conversations_router)
+
+app.include_router(chat_message_router)
 
 @app.get("/")
 def read_root():
