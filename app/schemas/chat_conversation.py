@@ -30,3 +30,7 @@ class CreateConversationRequest(BaseModel):
 # ----------------------------
 class ListConversationsResponse(BaseModel):
     conversations: List[ConversationDTO]
+
+
+class UpdateConversationTitleRequest(BaseModel):
+    title: str

@@ -1,14 +1,17 @@
 # api/v1/conversations.py
+from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException,status
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from typing import List
 
 from app.common.response import ApiResponse
 from app.db.session import get_db
 from app.dependencies.get_current_user import get_current_user
+from app.models.chat_message import ChatMessage
 from app.schemas.user import CurrentUser
-from app.schemas.chat_conversation import ConversationDTO, CreateConversationRequest
+from app.schemas.chat_conversation import ConversationDTO, CreateConversationRequest,UpdateConversationTitleRequest
 from app.models.chat_conversation import ChatConversation
 import uuid
 
@@ -75,3 +78,110 @@ def create_conversation(
     db.commit()
     db.refresh(conversation)
     return ApiResponse.success(data=conversation)
+
+
+
+
+@router.delete("/{conversation_id}")
+def delete_conversation(
+    conversation_id: str,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    """
+    硬删除一个会话及其所有消息（物理删除）
+    - 权限校验：确保该会话属于当前用户
+    - 级联删除：自动删除 chat_messages 中的相关消息
+    - 返回标准 ApiResponse 格式
+    """
+    try:
+        # 1. 查询会话：必须存在、属于当前用户
+        conversation = db.query(ChatConversation).filter(
+            ChatConversation.id == conversation_id,
+            ChatConversation.user_id == current_user.user_id
+        ).first()
+
+        if not conversation:
+            return ApiResponse.fail(
+                message="会话不存在或无权限删除",
+                code=status.HTTP_404_NOT_FOUND
+            )
+
+        # 2. 删除该会话下的所有消息
+        db.query(ChatMessage).filter(ChatMessage.conversation_id == conversation_id).delete(
+            synchronize_session=False
+        )
+
+        # 3. 删除会话本身
+        db.delete(conversation)
+        db.commit()
+
+        return ApiResponse.success(
+            data=None,
+            message="会话已成功删除",
+        )
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        return ApiResponse.fail(
+            message="数据库操作失败",
+            code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    except Exception as e:
+        db.rollback()
+        return ApiResponse.fail(
+            message="删除会话时发生未知错误"+str(e),
+            code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+
+
+@router.patch("/{conversation_id}/title")
+def update_conversation_title(
+    conversation_id: str,
+    request: UpdateConversationTitleRequest,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    """
+    修改会话标题
+    """
+    title = request.title.strip()
+    if not title:
+        return ApiResponse.fail(
+            message="会话标题不能为空",
+            code=400
+        )
+
+    if len(title) > 100:
+        return ApiResponse.fail(
+            message="会话标题不能超过100个字符",
+            code=400
+        )
+
+    conversation = db.query(ChatConversation).filter(
+        ChatConversation.id == conversation_id,
+        ChatConversation.user_id == current_user.user_id,
+        ChatConversation.deleted_at.is_(None)
+    ).first()
+
+    if not conversation:
+        return ApiResponse.failure(
+            message="会话不存在或已被删除",
+            code=404
+        )
+
+    conversation.title = title
+    conversation.updated_at = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(conversation)
+
+    return ApiResponse.success(
+        data={
+            "id": conversation.id,
+            "title": conversation.title,
+            "updated_at": conversation.updated_at
+        },
+        message="标题更新成功"
+    )
