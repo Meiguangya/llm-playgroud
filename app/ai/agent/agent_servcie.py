@@ -10,12 +10,13 @@ class AgentService:
     _agents: Dict[str, MySimpleAgent] = {}
 
     @classmethod
-    def get_agent(cls, config: dict) -> MySimpleAgent:
+    async def get_agent(cls, config: dict) -> MySimpleAgent:
         model_type = f"{config['model_name']}"
 
         if model_type not in cls._agents:
             print("创建新的agent")
             new_agent = MySimpleAgent(model_name=model_type)
+            await new_agent.initialize()
             cls._agents[model_type] = new_agent
 
         return cls._agents[model_type]
@@ -112,8 +113,10 @@ class AgentService:
 
         try:
             # 获取 agent
-            my_simple_agent = cls.get_agent({"model_name": model_name})
+            my_simple_agent = await cls.get_agent({"model_name": model_name})
             agent_executor = my_simple_agent.agent_executor
+            # 重写
+
             config = {"configurable": {"thread_id": chat_id}}
             input_data = {"messages": [("human", prompt)]}
 
@@ -146,18 +149,19 @@ class AgentService:
 
         except Exception as e:
             # 可选：也支持错误回调
-            error_msg = f"Error in stream_agent_response2: {str(e)}"
+            error_msg = f"Error in stream_agent_response: {str(e)}"
             # 仍然可以调用 on_complete，或单独处理
             if on_complete:
                 asyncio.create_task(
                     on_complete(
                         full_content=f"系统错误：{str(e)}",
-                        chat_id=chat_id,
+                        conversation_id=chat_id,
                         model_name=model_name,
                         status="error"
                     )
                 )
             # 不 yield 错误，由上层处理
-            raise  # 或 yield error_msg，看你的需求
+            # raise  # 或 yield error_msg，看你的需求
+            yield error_msg
 
 

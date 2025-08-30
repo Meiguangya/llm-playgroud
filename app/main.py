@@ -25,6 +25,7 @@ from app.api.chat_message import router as chat_message_router
 import os
 from app.core.redis_client import init_redis
 from app.ai.rag.loader.load_system_file import LoadSystemFile
+from app.ai.checkpoint.redis_checkpoint import get_redis_checkpointer
 
 
 @asynccontextmanager
@@ -34,6 +35,11 @@ async def lifespan(app: FastAPI):
     print("Initializing Redis client start...")
     init_redis()
     print("Initializing Redis client end...")
+
+    # 初始化redis_checkpoint
+    print("Initializing Redis CheckPoint start...")
+    await get_redis_checkpointer()
+    print("Initializing Redis CheckPoint end...")
 
     # 应用启动时初始化 Chroma 客户端
     # print("Initializing Chroma client...")
@@ -52,6 +58,10 @@ async def lifespan(app: FastAPI):
 
     yield
     logger.info("应用关闭中...")
+
+    # 释放资源
+
+    print("👋 资源释放完成，应用已关闭")
 
 
 # 创建 FastAPI 实例

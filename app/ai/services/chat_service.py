@@ -5,13 +5,6 @@ from langchain_core.messages import HumanMessage
 from app.ai.graph.chat_graph import ConversationState
 from app.ai.graph.chat_graph_service import ChatGraphService
 
-# 从环境变量获取 API Key
-DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
-if not DASHSCOPE_API_KEY:
-    raise ValueError("DASHSCOPE_API_KEY is not set")
-
-print(f"获取DASHSCOPE_API_KEY成功{DASHSCOPE_API_KEY}")
-
 
 async def stream_chat_response(
         prompt: str,

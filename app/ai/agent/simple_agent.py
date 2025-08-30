@@ -4,6 +4,9 @@ from langgraph.prebuilt import create_react_agent
 from app.ai.agent.tools.employee_tools import *
 from app.ai.agent.tools.retrieve_tools import retriever_tool
 
+from app.ai.checkpoint.redis_checkpoint import get_redis_checkpointer
+
+
 from app.ai.models.llm_factory import get_llm
 
 
@@ -27,23 +30,19 @@ class MySimpleAgent:
                  model_name: str = ""
                  ):
         self.llm_model = get_llm(model_name)
-        #self.llm_model = None
-        self.memory = MemorySaver()
+        # self.memory = MemorySaver()
         self.system_prompt = system_prompt
         self.tools = tools
-        self.agent_executor = self._create_simple_agent()
+        self.agent_executor = None
 
-    def _create_simple_agent(self) -> CompiledStateGraph:
-        """
-        创建ReAct-Agent
-        :return: Graph
-        """
-        agent_executor = create_react_agent(self.llm_model,
-                                            self.tools,
-                                            checkpointer=self.memory,
-                                            prompt=system_prompt)
+    async def initialize(self):
+        checkpoint = await get_redis_checkpointer()
+        self.agent_executor = create_react_agent(self.llm_model,
+                                                 self.tools,
+                                                 checkpointer=checkpoint,
+                                                 prompt=system_prompt)
 
-        return agent_executor
+        return self
 
 
 if __name__ == "__main__":
