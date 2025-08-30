@@ -75,7 +75,7 @@ async def get_current_user(
         )
 
     # 5. 创建 CurrentUser 对象
-    current_user = CurrentUser(user_id=user_id, username=username)
+    current_user = CurrentUser(user_id=user_id, username=username, token=token)
 
     # 6. 存入 request.state（实现“类 ThreadLocal”效果）
     if not hasattr(request.state, "current_user"):

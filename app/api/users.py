@@ -11,6 +11,7 @@ from app.core.security import hash_password, verify_password, create_access_toke
 from app.common.response import ApiResponse
 from app.models import User
 from app.schemas.user import *
+from app.dependencies.get_current_user import get_current_user
 
 import json
 
@@ -147,3 +148,37 @@ def create_token_and_store_in_redis(user: models.User, redis: redis.Redis) -> st
         print(f"⚠️ Redis 写入失败: {e}")
 
     return access_token
+
+
+@router.post("/logout")
+def logout(
+        current_user=Depends(get_current_user),
+        db: Session = Depends(get_db),
+        redis: redis.Redis = Depends(get_redis)
+):
+    """
+    用户退出登录
+    - 删除 Redis 中的 token 缓存
+    - 返回成功响应
+    """
+    try:
+        # Redis 中存储的 key，例如：token:123 或 session:user_123
+        redis_key = f"auth:token:{current_user.token}"
+
+        # 删除 Redis 中的 token
+        deleted_count = redis.delete(redis_key)
+
+        # 可选：记录用户最后登出时间
+        # current_user.last_logout_at = datetime.now(timezone.utc)
+        # db.commit()
+
+        return ApiResponse.success(
+            data=None,
+            message="退出登录成功"
+        )
+
+    except Exception as e:
+        return ApiResponse.fail(
+            code=500,
+            message="退出登录失败，请稍后重试"
+        )
